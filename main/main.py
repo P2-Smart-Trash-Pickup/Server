@@ -41,15 +41,29 @@ async def login_page(request: Request):
 async def login(response: Response, username: str = Form(...), password: str = Form(...)):
     db = SessionLocal()
     user = db.query(User).filter(User.email == username).first()
-    db.close()
 
     if user and sha256_crypt.verify(password, user.password_hash):
-        token = serializer.dumps({"email": user.email, "is_admin": user.is_admin})
-        resp = RedirectResponse("/", status_code=302)
+        if user.must_reset:
+            # Store only email in session for password reset
+            token = serializer.dumps({"email": user.email, "force_reset": True})
+            resp = RedirectResponse("/change-password", status_code=302)
+        else:
+            token = serializer.dumps({"email": user.email, "is_admin": user.is_admin})
+            resp = RedirectResponse("/", status_code=302)
+
         resp.set_cookie(key="session", value=token, httponly=True)
+        db.close()
         return resp
 
+    db.close()
     return HTMLResponse("<h1>Invalid credentials</h1><p><a href='/login'>Try again</a></p>", status_code=401)
+
+@app.get("/change-password", response_class=HTMLResponse)
+async def change_password_page(request: Request):
+    user = get_session_user(request)
+    if not user or not user.get("force_reset"):
+        return RedirectResponse("/", status_code=302)
+    return templates.TemplateResponse("ChangePassword.html", {"request": request})
 
 @app.get("/logout")
 async def logout():
@@ -99,3 +113,33 @@ async def add_user(
     db.commit()
     db.close()
     return RedirectResponse("/", status_code=302)
+
+@app.post("/change-password")
+async def change_password(
+    request: Request,
+    new_password: str = Form(...),
+    confirm_password: str = Form(...),
+):
+    user = get_session_user(request)
+    if not user or not user.get("force_reset"):
+        return RedirectResponse("/", status_code=302)
+
+    if new_password != confirm_password:
+        return HTMLResponse("<h1>Passwords do not match.</h1><a href='/change-password'>Try again</a>", status_code=400)
+
+    db = SessionLocal()
+    user_obj = db.query(User).filter(User.email == user["email"]).first()
+    user_obj.password_hash = sha256_crypt.hash(new_password)
+    user_obj.must_reset = False
+    db.commit()
+
+    # Get values before session closes
+    email = user_obj.email
+    is_admin = user_obj.is_admin
+    db.close()
+
+    token = serializer.dumps({"email": email, "is_admin": is_admin})
+    resp = RedirectResponse("/", status_code=302)
+    resp.set_cookie(key="session", value=token, httponly=True)
+    return resp
+
