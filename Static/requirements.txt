@@ -1,4 +1,8 @@
 fastapi
 uvicorn
 jinja2
-aiofiles  # Required for serving static files
+aiofiles 
+python-multipart
+itsdangerous
+passlib[bcrypt] 
+sqlalchemy

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sensor Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+  <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+</head>
+<body>
+  <main class="container">
+    <header style="display: flex; justify-content: space-between; align-items: center;">
+      <h1>Welcome, {{ user.email }}</h1>
+      <div>
+        {% if user.is_admin %}
+          <a href="/add-u ser" class="contrast" style="margin-right: 1rem;">➕ Create User</a>
+        {% endif %}
+        <a href="/logout">Log out</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>Latest Weight</h2>
+      <div 
+        id="weight-display"
+        hx-get="/api/latest-weight"
+        hx-trigger="every 3s"
+        hx-swap="innerHTML"
+      >
+        <p>Loading latest weight...</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

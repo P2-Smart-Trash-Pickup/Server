@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create User</title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Create New User</h1>
+    <form method="post" action="/add-user">
+      <label>
+        Company Email
+        <input type="email" name="email" required>
+      </label>
+      <label>
+        Temporary Password
+        <input type="text" name="temp_password" required>
+      </label>
+      <label>
+        <input type="checkbox" name="is_admin">
+        Grant Admin Access
+      </label>
+      <button type="submit">Create User</button>
+    </form>
+    <p><a href="/">← Back to Dashboard</a></p>
+  </main>
+</body>
+</html>
