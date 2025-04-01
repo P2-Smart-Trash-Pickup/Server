@@ -9,26 +9,15 @@
 <body>
   <main class="container">
     <header style="display: flex; justify-content: space-between; align-items: center;">
-      <h1>Welcome, {{ user.email }}</h1>
-      <div>
+      <h1>Dashboard</h1>
+      <div style="display: flex; align-items: center; gap: 1rem;">
         {% if user.is_admin %}
-          <a href="/add-user" class="contrast" style="margin-right: 1rem;">➕ Create User</a>
+          <a href="/add-user" class="contrast">➕ Create User</a>
         {% endif %}
+        <span style="font-size: 0.9rem;">Welcome, {{ user.email }}</span>
         <a href="/logout">Log out</a>
       </div>
     </header>
-
-    <section>
-      <h2>Latest Weight</h2>
-      <div 
-        id="weight-display"
-        hx-get="/api/latest-weight"
-        hx-trigger="every 3s"
-        hx-swap="innerHTML"
-      >
-        <p>Loading latest weight...</p>
-      </div>
-    </section>
   </main>
 </body>
 </html>

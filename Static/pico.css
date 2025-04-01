@@ -1,0 +1,96 @@
+/* Drawer navigation */
+.drawer-container {
+  position: relative;
+}
+
+.drawer-toggle {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--card-background-color);
+  border-right: 1px solid var(--card-border-color);
+  z-index: 1100;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--card-border-color);
+}
+
+.drawer-close {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.drawer-content {
+  padding: 1rem;
+}
+
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.drawer-toggle:checked ~ .drawer {
+  transform: translateX(0);
+}
+
+.drawer-toggle:checked ~ .drawer-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Navigation toggle button */
+.nav-toggle {
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 0.75rem;
+  display: inline-block;
+}
+
+/* Ensure everything plays nice with Pico's variables */
+.drawer nav ul {
+  padding: 0;
+  list-style: none;
+}
+
+.drawer nav ul li {
+  margin-bottom: 0.5rem;
+}
+
+.drawer nav ul li a {
+  display: block;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  color: var(--primary);
+  transition: background-color 0.3s;
+}
+
+.drawer nav ul li a:hover, 
+.drawer nav ul li a.active {
+  background-color: var(--primary-hover);
+  color: var(--primary-inverse);
+}
