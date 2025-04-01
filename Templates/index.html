@@ -4,12 +4,27 @@
   <meta charset="UTF-8">
   <title>Sensor Dashboard</title>
   <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+  <link rel="stylesheet" href="/Static/sidenav.css">
   <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 </head>
 <body>
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="#" hx-get="/dashboard-content" hx-target="#content-area" hx-swap="innerHTML" onclick="closeNav()">Dashboard</a>
+    <a href="#">Sensors</a>
+    <a href="#">Reports</a>
+    <a href="#" hx-get="/martin-pics" hx-target="#content-area" hx-swap="innerHTML" onclick="closeNav()">Pics of Martin</a>
+  </div>
+
+  <!-- Add the sticky burger menu that appears when scrolling -->
+  <div id="stickyBurger" class="sticky-burger" onclick="openNav()">&#9776;</div>
+
   <main class="container">
-    <header style="display: flex; justify-content: space-between; align-items: center;">
-      <h1>Dashboard</h1>
+    <header style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <div style="margin-left: 1em; display: flex; flex-direction: row; align-items: center;">
+        <span id="defaultBurger" class="nav-toggle" onclick="openNav()">&#9776;</span>
+        <h1 style="margin-bottom: 0;">Dashboard</h1>
+      </div>
       <div style="display: flex; align-items: center; gap: 1rem;">
         {% if user.is_admin %}
           <a href="/add-user" class="contrast">➕ Create User</a>
@@ -18,6 +33,32 @@
         <a href="/logout">Log out</a>
       </div>
     </header>
+    
+    <!-- Add this content area for HTMX to target -->
+    <div id="content-area">
+    </div>
   </main>
+  
+  <script>
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+    
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+  
+    // Improved sticky burger menu handling with smooth transition
+    window.onscroll = function() {
+      var stickyBurger = document.getElementById("stickyBurger");
+      var headerHeight = 100;
+      
+      if (window.pageYOffset > headerHeight) {
+        stickyBurger.classList.add("visible");
+      } else {
+        stickyBurger.classList.remove("visible");
+      }
+    };
+  </script>
 </body>
 </html>

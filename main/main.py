@@ -9,7 +9,7 @@ from passlib.hash import sha256_crypt
 from datetime import datetime, timedelta
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/Static", StaticFiles(directory="Static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key")  # Loads a secret key from environment variable or uses a fallback
@@ -77,6 +77,21 @@ async def get_latest_weight():
     import random
     weight = round(random.uniform(2.0, 10.0), 2)
     return f"<p><strong>Latest Weight:</strong> {weight} kg</p>"
+
+# ========== Burger Menu ==========
+@app.get("/martin-pics", response_class=HTMLResponse)
+async def martin_pics(request: Request):
+    user = get_session_user(request)
+    if not user:
+        return RedirectResponse("/login", status_code=302)
+    return templates.TemplateResponse("MartinPics.html", {"request": request, "user": user})
+
+@app.get("/dashboard-content", response_class=HTMLResponse)
+async def dashboard_content(request: Request):
+    user = get_session_user(request)
+    if not user:
+        return RedirectResponse("/login", status_code=302)
+    return ""
 
 # ========== ADMIN: Add User Page ==========
 @app.get("/add-user", response_class=HTMLResponse)
