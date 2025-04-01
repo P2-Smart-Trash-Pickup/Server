@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Request, Form, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -11,7 +12,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-SECRET_KEY = "your-secret-key"
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key")  # Loads a secret key from environment variable or uses a fallback
 serializer = URLSafeSerializer(SECRET_KEY)
 
 init_db()
