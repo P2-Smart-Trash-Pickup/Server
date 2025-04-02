@@ -42,23 +42,33 @@
   <script>
     function openNav() {
       document.getElementById("mySidenav").style.width = "250px";
+      document.getElementById("stickyBurger").classList.remove("visible");
     }
     
     function closeNav() {
-      document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("mySidenav").style.width = "0";
+    // Check if we need to show the sticky burger menu again after nav closes
+    var stickyBurger = document.getElementById("stickyBurger");
+    if (window.pageYOffset > 100) {
+      setTimeout(function() {
+        stickyBurger.classList.add("visible");
+      }, 500); // Wait for nav closing animation to finish
     }
+  }
   
     // Improved sticky burger menu handling with smooth transition
     window.onscroll = function() {
-      var stickyBurger = document.getElementById("stickyBurger");
-      var headerHeight = 100;
-      
-      if (window.pageYOffset > headerHeight) {
-        stickyBurger.classList.add("visible");
-      } else {
-        stickyBurger.classList.remove("visible");
-      }
-    };
+    var stickyBurger = document.getElementById("stickyBurger");
+    var headerHeight = 100;
+    var sidenav = document.getElementById("mySidenav");
+    
+    // Only show the sticky burger if the sidenav is closed
+    if (window.pageYOffset > headerHeight && sidenav.style.width === "0px") {
+      stickyBurger.classList.add("visible");
+    } else {
+      stickyBurger.classList.remove("visible");
+    }
+  };
   </script>
 </body>
 </html>
