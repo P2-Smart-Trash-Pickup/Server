@@ -27,6 +27,8 @@
   color: var(--text-muted);
   display: block;
   transition: var(--transition-speed);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .sidenav a:hover {
