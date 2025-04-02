@@ -1,3 +1,5 @@
+INSTALL REQ USING THE FOLLOWING TERMINAL PIP CMD: pip install -r requirements.txt
+
 Plan:
 - We will run the server Using The Lora Protocol since we need to sent data a far and it is the ideal for that.
   It will go to a likely Self hosted Lora translation server, then be forwarded using JSON to our actual webserver.

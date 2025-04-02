@@ -47,29 +47,42 @@
     }
     
     function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    // Check if we need to show the sticky burger menu again after nav closes
-    var stickyBurger = document.getElementById("stickyBurger");
-    if (window.pageYOffset > 100) {
-      setTimeout(function() {
-        stickyBurger.classList.add("visible");
-      }, 500); // Wait for nav closing animation to finish
+      document.getElementById("mySidenav").style.width = "0";
+      // Check if we need to show the sticky burger menu again after nav closes
+      var stickyBurger = document.getElementById("stickyBurger");
+      if (window.pageYOffset > 100) {
+        setTimeout(function() {
+          stickyBurger.classList.add("visible");
+        }, 500); // Wait for nav closing animation to finish
+      }
     }
-  }
-  
+    
     // Improved sticky burger menu handling with smooth transition
     window.onscroll = function() {
-    var stickyBurger = document.getElementById("stickyBurger");
-    var headerHeight = 100;
-    var sidenav = document.getElementById("mySidenav");
-    
-    // Only show the sticky burger if the sidenav is closed
-    if (window.pageYOffset > headerHeight && sidenav.style.width === "0px") {
-      stickyBurger.classList.add("visible");
-    } else {
-      stickyBurger.classList.remove("visible");
-    }
-  };
+      var stickyBurger = document.getElementById("stickyBurger");
+      var headerHeight = 100;
+      var sidenav = document.getElementById("mySidenav");
+      
+      // Only show the sticky burger if the sidenav is closed
+      if (window.pageYOffset > headerHeight && sidenav.style.width === "0px") {
+        stickyBurger.classList.add("visible");
+      } else {
+        stickyBurger.classList.remove("visible");
+      }
+    };
+  
+    // Close sidebar when clicking outside of it
+    document.addEventListener('click', function(event) {
+      var sidebar = document.getElementById('mySidenav');
+      var sidebarOpen = sidebar.style.width !== "0px";
+      
+      // Check if click is outside sidebar and sidebar is open
+      if (sidebarOpen && !sidebar.contains(event.target) && 
+          !event.target.classList.contains('nav-toggle') && 
+          !event.target.classList.contains('sticky-burger')) {
+        closeNav();
+      }
+    });
   </script>
 </body>
 </html>
