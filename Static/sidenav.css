@@ -28,7 +28,8 @@
   display: block;
   transition: var(--transition-speed);
   white-space: nowrap;
-  overflow: hidden;
+  overflow: hidden; /* NEVER GONNA ADD SCROLL NOW GIVE YOU UP */
+  
 }
 
 .sidenav a:hover {
