@@ -41,7 +41,7 @@ body {
   }
   
   .map-placeholder {
-    background-color: yellow;
+    background-color: White;
     width: 100%;
     height: 600px; 
     display: flex;
@@ -51,7 +51,7 @@ body {
     border-radius: 10px;
     font-size: 1.5rem;
     font-weight: bold;
-    
+    color: blueviolet !important;
   }
 
   .Routes-header {
