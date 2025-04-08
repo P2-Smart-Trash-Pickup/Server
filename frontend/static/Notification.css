@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .nav-center {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav.grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+  
+  .logout.align-right {
+    justify-self: end; 
+  }
+  
+  main.container {
+    margin-top: 2rem;
+  }
+  
+  main.container article {
+    border-radius: 20px;
+  }
+  
+  .notification-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem; 
+    margin-bottom: 1rem;
+  }
+  
+  .notification-header h2 {
+    margin: 0;
+  }

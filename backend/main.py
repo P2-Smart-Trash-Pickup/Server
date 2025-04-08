@@ -22,3 +22,7 @@ async def read_index(request: Request):
 @app.get("/MartinPics", response_class=HTMLResponse)
 async def read_martinpics(request: Request):
     return templates.TemplateResponse("MartinPics.html", {"request": request, "username": "User"})
+
+@app.get("/Notifications", response_class=HTMLResponse)
+async def read_martinpics(request: Request):
+    return templates.TemplateResponse("Notifications.html", {"request": request, "username": "User"})
