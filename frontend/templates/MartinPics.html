@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sensor Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <link rel="stylesheet" href="/static/Martin.css" />
+  <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
+  <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="header-container">
+    <nav class="grid">
+      <div>
+        <strong>Hello, {{ username }}</strong>
+      </div>
+
+      <ul class="nav-center">
+        <li><a href="/" class="secondary">Routes</a></li>
+        <li><a href="/Notifications" class="secondary">Notifications</a></li>
+        <li><a href="/MartinPics" class="secondary">Pics of Martin</a></li>
+      </ul>
+
+      <div class="logout align-right">
+        <a class="contrast">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="main-container">
+    <article>
+      <div class="images-header">
+        <h2>Pictures of Martin</h2>
+      </div>
+      <section id="images-display">
+        <div class="images-placeholder">
+          Pictures of Martin will be displayed here.
+        </div>
+      </section>
+    </article>
+  </main>
+</body>
+</html>

@@ -27,11 +27,11 @@ body {
     justify-self: end; 
   }
   
-  main.container {
+  main.main-container {
     margin-top: 2rem;
   }
 
-  main.container article {
+  main.main-container article {
     border-radius: 20px;
   }
   
@@ -40,7 +40,7 @@ body {
     text-align: center;
   }
   
-  .map-placeholder {
+  .images-placeholder {
     background-color: White;
     width: 100%;
     min-height: 600px; 
@@ -54,7 +54,7 @@ body {
     color: blueviolet !important;
   }
 
-  .Routes-header {
+  .images-header {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,6 +62,6 @@ body {
     margin-bottom: 1rem;
   }
   
-  .Routes-header h2 {
+  .images-header h2 {
     margin: 0;
   }
