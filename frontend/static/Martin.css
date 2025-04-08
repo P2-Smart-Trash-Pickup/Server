@@ -41,17 +41,51 @@ main.container article {
 }
 
 .image-placeholder {
-  background-color: White;
+  /*background-color: rgb(42, 18, 63);*/
   width: 100%;
   min-height: 600px; 
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   border: 2px solid black;
   border-radius: 10px;
+  padding: 5px;
+  gap: 5px;
+  overflow-y: auto;
   font-size: 1.5rem;
   font-weight: bold;
   color: blueviolet !important;
+}
+
+.image-container {
+  width: calc(50% - 20px);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.martin-image {
+  width: 80%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.martin-image-vertical {
+  width: 60%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .image-container {
+    width: 100%;
+  }
 }
 
 .picture-header {
