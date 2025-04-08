@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic page metadata for browser compatibility and proper display -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Makes page responsive on different devices -->
+  <title>Sensor Dashboard</title>  <!-- Title displayed in browser tab -->
+  <!-- External CSS libraries and custom stylesheets -->
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" /> <!--Pico CSS framework-->
+  <link rel="stylesheet" href="/static/Martin.css" /> <!--Our own custom CSS-->
+  <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" /> <!--Icon in tab-->
+  <!-- HTMX library for making AJAX requests without writing JavaScript -->
+  <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- Page header with navigation -->
+  <header class="page-header container">
+    <!-- Left section of nav: greeting with username -->
+    <nav class="grid">
+      <div>
+        <strong>Hello, {{ username }}</strong>
+      </div>
+
+      <!-- Center section of nav: main navigation links -->
+      <ul class="nav-center">
+        <li><a href="/" class="secondary">Routes</a></li>
+        <li><a href="/Notifications" class="secondary">Notifications</a></li>
+        <li><a href="/MartinPics" class="secondary">Pics of Martin</a></li>
+      </ul>
+      
+      <!-- Right section of nav: logout button -->
+      <div class="logout align-right">
+        <a class="contrast">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main content area -->
+  <main class="container">
+    <article>
+      <div class="picture-header">
+        <h2>Pictures of Martin</h2>
+      </div>
+      <section id="image-box">
+         <!-- Container for all images -->
+        <div class="image-placeholder">
+
+          <div class="image-container">
+            <img src="/static/images/martin1.png" alt="Martin face" class="martin-image-vertical">
+          </div>
+          <div class="image-container">
+            <img src="/static/images/martin2.jpg" alt="Martin chair" class="martin-image">
+          </div>
+          
+        </div>
+      </section>
+    </article>
+  </main>
+</body>
+</html>

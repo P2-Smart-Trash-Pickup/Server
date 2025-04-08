@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Document metadata for proper rendering and browser compatibility -->
+  <meta charset="UTF-8" /> <!-- Defines character encoding for the document -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Enables responsive design -->
+  <title>Sensor Dashboard</title> <!-- Title shown in browser tab -->
+  
+  <!-- External stylesheets and resources -->
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" /> <!-- Pico CSS framework -->
+  <link rel="stylesheet" href="/static/index.css" /> <!-- Custom CSS specific to this page -->
+  <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" /> <!-- Browser tab icon -->
+  
+  <!-- HTMX library - enables dynamic content without writing JavaScript -->
+  <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- Page header containing navigation elements -->
+  <header class="container">
+    <nav class="grid">
+      <!-- Left section: user greeting -->
+      <div>
+        <strong>Hello, {{ username }}</strong> <!-- Dynamic template variable for username -->
+      </div>
+
+      <!-- Center section: main navigation links -->
+      <ul class="nav-center">
+        <li><a href="/" class="secondary">Routes</a></li> <!-- Current page -->
+        <li><a href="/Notifications" class="secondary">Notifications</a></li>
+        <li><a href="/MartinPics" class="secondary">Pics of Martin</a></li>
+      </ul>
+
+      <!-- Right section: logout option -->
+      <div class="logout align-right">
+        <a class="contrast">Logout</a> <!-- Button for user to log out -->
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main content area of the page -->
+  <main class="container">
+    <article>
+      <!-- Page title section -->
+      <div class="Routes-header">
+        <h2>Suggested Routes</h2>
+      </div>
+      
+      <!-- Map display section -->
+      <section id="map-simulation">
+        <div class="map-placeholder">
+          Simulated Map <!-- Placeholder text, to be replaced with actual map -->
+        </div>
+      </section>
+    </article>
+  </main>
+</body>
+</html>

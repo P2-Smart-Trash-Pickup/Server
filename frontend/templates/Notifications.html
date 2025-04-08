@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic metadata for browser compatibility and display -->
+  <meta charset="UTF-8" /> <!-- Defines the character encoding for proper text display -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Makes site responsive across devices -->
+  <title>Notifications</title> <!-- Sets the page title shown in browser tab -->
+  
+  <!-- External CSS resources -->
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" /> <!-- Pico CSS framework for styling -->
+  <link rel="stylesheet" href="/static/Notification.css" /> <!-- Custom CSS specific to notification page -->
+  <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" /> <!-- Favicon (tab icon) -->
+  
+  <!-- HTMX library for interactive elements without JavaScript -->
+  <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- Page header with navigation -->
+  <header class="page-header container">
+    <nav class="grid">
+      <!-- Left section: user greeting -->
+      <div>
+        <strong>Hello, {{ username }}</strong> <!-- Dynamic template variable that shows user's name -->
+      </div>
+
+      <!-- Center section: main navigation menu -->
+      <ul class="nav-center">
+        <li><a href="/" class="secondary">Routes</a></li> <!-- Link to routes page -->
+        <li><a href="/Notifications" class="secondary">Notifications</a></li> <!-- Link to current page -->
+        <li><a href="/MartinPics" class="secondary">Pics of Martin</a></li> <!-- Link to Martin pictures page -->
+      </ul>
+
+      <!-- Right section: logout button -->
+      <div class="logout align-right">
+        <a class="contrast">Logout</a> <!-- Button for logging out -->
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main content area -->
+  <main class="container">
+    <article>
+      <!-- Notification page header -->
+      <div class="notification-header">
+        <h2>Notifications</h2> <!-- Page title -->
+      </div>
+      <!-- Note: This is a placeholder page with just a header -->
+      <!-- Content for notifications would be added here -->
+    </article>
+  </main>
+</body>
+</html>

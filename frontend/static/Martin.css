@@ -1,0 +1,117 @@
+/* Reset default browser margins and padding */
+body {
+  margin: 0;  /* Removes default margin around the entire page */
+  padding: 0; /* Removes default padding around the entire page */
+}
+
+/* Spacing for the header section */
+header {
+  margin-top: 1rem;    /* Adds space above the header (1rem = relative to font size) */
+  margin-bottom: 1rem; /* Adds space below the header */
+}
+
+/* Navigation menu styling for the center links */
+.nav-center {
+  display: flex;           /* Uses flexbox layout for horizontal alignment */
+  justify-content: center; /* Centers the navigation items horizontally */
+  gap: 1.5rem;             /* Creates equal spacing between navigation items */
+  list-style: none;        /* Removes bullet points from the list items */
+  margin: 0;               /* Removes default margins */
+  padding: 0;              /* Removes default padding */
+}
+
+/* Grid layout for the entire navigation bar with 3 sections */
+nav.grid {
+  display: grid;                       /* Uses CSS grid layout */
+  grid-template-columns: 1fr auto 1fr; /* Creates 3 columns: left, center, right */
+                                       /* 1fr = flexible space, auto = size to content */
+  align-items: center;                 /* Vertically centers all nav elements */
+}
+
+/* Position the logout button on the right side */
+.logout.align-right {
+  justify-self: end; /* Pushes this element to the right end of its grid cell */
+}
+
+/* Spacing for the main content container */
+main.container {
+  margin-top: 2rem; /* Adds space between header and main content */
+}
+
+/* Rounded corners for the article elements inside main container */
+main.container article {
+  border-radius: 20px; /* Creates rounded corners with a 20px radius */
+}
+
+/* Centers the images display section */
+#images-display {
+  margin-top: 2rem;   /* Adds space above the images section */
+  text-align: center; /* Centers the content horizontally */
+}
+
+/* Styling for the container that holds all the images */
+.image-placeholder {
+  /*background-color: rgb(42, 18, 63);*/ /* Commented out background color */
+  width: 100%;           /* Takes up full width of its parent */
+  min-height: 600px;     /* Ensures a minimum height even when empty */
+  display: flex;         /* Uses flexbox layout */
+  flex-wrap: wrap;       /* Allows items to wrap to next line when needed */
+  justify-content: center; /* Centers items horizontally */
+  align-items: flex-start; /* Aligns items to the top */
+  border: 2px solid black; /* Adds a black border around the container */
+  border-radius: 10px;     /* Rounds the corners of the border */
+  padding: 5px;            /* Adds inner spacing */
+  gap: 5px;                /* Creates space between the image containers */
+  overflow-y: auto;        /* Adds vertical scrollbar if content overflows */
+  font-size: 1.5rem;       /* Sets text size within the container */
+  font-weight: bold;       /* Makes any text bold */
+  color: blueviolet !important; /* Sets text color to blueviolet with high priority */
+}
+
+/* Individual image container styling */
+.image-container {
+  width: calc(50% - 20px); /* Each container takes up half the width minus margins */
+  margin-bottom: 10px;     /* Adds space below each container */
+  text-align: center;      /* Centers the image within its container */
+}
+
+/* Standard image styling */
+.martin-image {
+  width: 80%;             /* Image takes 80% of its container width */
+  max-width: 100%;        /* Prevents image from exceeding container width */
+  height: auto;           /* Maintains aspect ratio */
+  object-fit: contain;    /* Ensures the entire image fits in the container */
+  border-radius: 8px;     /* Rounds the corners of the image */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow effect */
+}
+
+/* Vertical-oriented image styling (narrower width) */
+.martin-image-vertical {
+  width: 60%;             /* Vertical images are narrower at 60% container width */
+  max-width: 100%;        /* Prevents image from exceeding container width */
+  height: auto;           /* Maintains aspect ratio */
+  object-fit: contain;    /* Ensures the entire image fits in the container */
+  border-radius: 8px;     /* Rounds the corners of the image */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow effect */
+}
+
+/* Responsive design for smaller screens (tablets and phones) */
+@media (max-width: 768px) {
+  .image-container {
+    width: 100%; /* On smaller screens, images take full width for better visibility */
+  }
+}
+
+/* Styling for the pictures page header */
+.picture-header {
+  display: flex;           /* Uses flexbox layout */
+  justify-content: center; /* Centers content horizontally */
+  align-items: center;     /* Centers content vertically */
+  gap: 1rem;               /* Adds space between header elements if any */
+  margin-bottom: 1rem;     /* Adds space below the header */
+}
+
+/* Removes default margins from the header title */
+.picture-header h2 {
+  margin: 0; /* Removes the default margin of the h2 element */
+}

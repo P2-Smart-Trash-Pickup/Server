@@ -1,0 +1,78 @@
+/* Reset default browser styling */
+body {
+  margin: 0;  /* Removes default outer spacing */
+  padding: 0; /* Removes default inner spacing */
+}
+
+/* Header spacing control */
+header {
+  margin-top: 1rem;    /* Adds space above the header */
+  margin-bottom: 1rem; /* Adds space below the header */
+}
+
+/* Navigation menu styling - center navigation links */
+.nav-center {
+  display: flex;           /* Uses flexbox for horizontal layout */
+  justify-content: center; /* Centers navigation items horizontally */
+  gap: 1.5rem;             /* Space between navigation items */
+  list-style: none;        /* Removes bullet points from list */
+  margin: 0;               /* Removes default margins */
+  padding: 0;              /* Removes default padding */
+}
+
+/* Navigation bar layout structure - three-section grid */
+nav.grid {
+  display: grid;                       /* Uses CSS grid layout */
+  grid-template-columns: 1fr auto 1fr; /* Three columns: flexible-auto-flexible */
+  align-items: center;                 /* Vertically centers all nav items */
+}
+
+/* Logout button positioning */
+.logout.align-right {
+  justify-self: end;  /* Aligns the logout button to the right side */
+}
+
+/* Main content spacing */
+main.container {
+  margin-top: 2rem; /* Adds space between header and main content */
+}
+
+/* Styling for content panels */
+main.container article {
+  border-radius: 20px; /* Rounded corners on the main content box */
+}
+
+/* Image display section styling */
+#images-display {
+  margin-top: 2rem;   /* Space above image section */
+  text-align: center; /* Center-aligns content */
+}
+
+/* Map container styling */
+.map-placeholder {
+  background-color: White;     /* White background for map area */
+  width: 100%;                 /* Takes full width of parent */
+  min-height: 600px;           /* Minimum height ensures visibility */
+  display: flex;               /* Uses flexbox layout */
+  justify-content: center;     /* Horizontally centers content */
+  align-items: center;         /* Vertically centers content */
+  border: 2px solid black;     /* Black border around map */
+  border-radius: 10px;         /* Rounded corners on map container */
+  font-size: 1.5rem;           /* Large text size for placeholder */
+  font-weight: bold;           /* Bold text for placeholder */
+  color: blueviolet !important; /* Purple text color with high priority */
+}
+
+/* Routes page header styling */
+.Routes-header {
+  display: flex;           /* Uses flexbox layout */
+  justify-content: center; /* Centers content horizontally */
+  align-items: center;     /* Centers content vertically */
+  gap: 1rem;               /* Space between elements if any */
+  margin-bottom: 1rem;     /* Space below the header */
+}
+
+/* Routes header title styling */
+.Routes-header h2 {
+  margin: 0; /* Removes default margins from heading */
+}

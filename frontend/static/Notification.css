@@ -1,0 +1,57 @@
+/* Reset default browser margins and padding */
+body {
+  margin: 0;  /* Removes default outer spacing around page */
+  padding: 0; /* Removes default inner spacing */
+}
+
+/* Header spacing control */
+header {
+  margin-top: 1rem;    /* Adds space above header */
+  margin-bottom: 1rem; /* Adds space below header */
+}
+
+/* Styles for the center navigation menu */
+.nav-center {
+  display: flex;           /* Uses flexbox for horizontal layout */
+  justify-content: center; /* Centers navigation links */
+  gap: 1.5rem;             /* Adds equal spacing between links */
+  list-style: none;        /* Removes default bullet points */
+  margin: 0;               /* Removes default margins */
+  padding: 0;              /* Removes default padding */
+}
+
+/* Navigation bar layout structure */
+nav.grid {
+  display: grid;                       /* Uses CSS grid layout */
+  grid-template-columns: 1fr auto 1fr; /* Three columns: left, center, right */
+  align-items: center;                 /* Vertically centers all items */
+}
+
+/* Logout button positioning */
+.logout.align-right {
+  justify-self: end; /* Pushes logout button to right edge */
+}
+
+/* Main content spacing */
+main.container {
+  margin-top: 2rem; /* Space between header and main content */
+}
+
+/* Styling for the main content panel */
+main.container article {
+  border-radius: 20px; /* Rounded corners on content panel */
+}
+
+/* Notification page title section styling */
+.notification-header {
+  display: flex;           /* Uses flexbox layout */
+  justify-content: center; /* Centers content horizontally */
+  align-items: center;     /* Centers content vertically */
+  gap: 1rem;               /* Space between elements (if any) */
+  margin-bottom: 1rem;     /* Space below the header */
+}
+
+/* Notification title text styling */
+.notification-header h2 {
+  margin: 0; /* Removes default margins from heading */
+}
