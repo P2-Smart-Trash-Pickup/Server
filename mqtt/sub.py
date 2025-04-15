@@ -1,11 +1,11 @@
-import sys,json,time,os,dotenv
+import sys,json,time,dotenv,os
 from influxdb_client_3 import InfluxDBClient3, Point
 
 import paho.mqtt.client as paho
 
 dotenv.load_dotenv()
 
-token = os.getenv("TOKEN") 
+token = os.getenv("TOKEN")
 
 org = "Gruppe 251"
 host = "https://eu-central-1-1.aws.cloud2.influxdata.com/"
