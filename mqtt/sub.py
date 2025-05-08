@@ -12,7 +12,7 @@ host = "https://eu-central-1-1.aws.cloud2.influxdata.com/"
 
 db_client = InfluxDBClient3(host=host, token=token, org=org)
 
-database="trivia"
+database="butler"
 
 def message_handling(client, userdata, msg):
     global db_client, write,database
