@@ -14,7 +14,7 @@ def create_database():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL,
-        email TEXT,
+        userType TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     ''')
@@ -30,8 +30,13 @@ def register_user():
     """Register a new user"""
     username = input("Enter username: ")
     password = getpass("Enter password: ")
-    email = input("Enter email (optional): ") or None
-    
+    if(input("Admin (y/n): ") == "y"):
+        userType = "Admin"
+        print(f"User type {userType}")
+    else:
+        userType = None
+        print(f"User type {userType}")
+
     password_hash = hash_password(password)
     
     try:
@@ -39,9 +44,9 @@ def register_user():
         cursor = conn.cursor()
         
         cursor.execute('''
-        INSERT INTO users (username, password_hash, email)
+        INSERT INTO users (username, password_hash, userType)
         VALUES (?, ?, ?)
-        ''', (username, password_hash, email))
+        ''', (username, password_hash, userType))
         
         conn.commit()
         print("User registered successfully!")
