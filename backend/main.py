@@ -1,3 +1,13 @@
+"""
+FastAPI application for user authentication and page management.
+
+This module handles:
+- User session management
+- Page routing with authentication
+- Login/logout functionality
+- Serving static files and templates
+"""
+
 from fastapi import FastAPI, Request, Response, Form, Depends, HTTPException, status 
 from fastapi.responses import HTMLResponse, RedirectResponse  # For returning HTML content
 from fastapi.staticfiles import StaticFiles  # For serving static files (CSS, images)
@@ -8,6 +18,7 @@ import sys
 from typing import Optional
 from itsdangerous import URLSafeTimedSerializer, BadSignature
 
+# Add parent directory to path to allow database module import
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database.database_logins import hash_password
 
@@ -24,11 +35,21 @@ app.mount("/static", StaticFiles(directory=static_path), name="static")
 # Configure template engine with correct directory
 templates = Jinja2Templates(directory=templates_path)
 
-# Session Management
+# Session Management Configuration
 SECRET_KEY = "your_secret_key"  # Replace with your actual secret key
 serializer = URLSafeTimedSerializer(SECRET_KEY)
 
 def get_username_from_session(request: Request) -> Optional[str]:
+    """
+    Retrieve username from session cookie.
+    
+    Args:
+        request: FastAPI Request object containing cookies
+        
+    Returns:
+        str: Username if session is valid
+        None: If no session or invalid session
+    """
     session_cookie = request.cookies.get("session")
     if not session_cookie:
         return None
@@ -39,41 +60,94 @@ def get_username_from_session(request: Request) -> Optional[str]:
     except BadSignature:
         return None
 
-# Route for homepage
 @app.get("/", response_class=HTMLResponse)
 async def read_index(request: Request):
+    """
+    Serve the homepage.
+    
+    Redirects to login page if user is not authenticated.
+    
+    Args:
+        request: FastAPI Request object
+        
+    Returns:
+        TemplateResponse: Rendered index.html template
+        RedirectResponse: To login page if not authenticated
+    """
     username = get_username_from_session(request)
     if not username:
         return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
     return templates.TemplateResponse("index.html", {"request": request, "username": username})
 
-# Route for Martin Pictures page
 @app.get("/MartinPics", response_class=HTMLResponse)
 async def read_martinpics(request: Request):
+    """
+    Serve the MartinPics page.
+    
+    Redirects to login page if user is not authenticated, with return URL.
+    
+    Args:
+        request: FastAPI Request object
+        
+    Returns:
+        TemplateResponse: Rendered MartinPics.html template
+        RedirectResponse: To login page if not authenticated
+    """
     username = get_username_from_session(request)
     if not username:
         return RedirectResponse(url="/login?next=MartinPics", status_code=status.HTTP_303_SEE_OTHER)
     return templates.TemplateResponse("MartinPics.html", {"request": request, "username": username})
 
-# Route for Notifications page - fix the function name to avoid duplicate names
 @app.get("/Notifications", response_class=HTMLResponse)
 async def read_notifications(request: Request):
+    """
+    Serve the Notifications page.
+    
+    Redirects to login page if user is not authenticated, with return URL.
+    
+    Args:
+        request: FastAPI Request object
+        
+    Returns:
+        TemplateResponse: Rendered Notifications.html template
+        RedirectResponse: To login page if not authenticated
+    """
     username = get_username_from_session(request)
     if not username:
         return RedirectResponse(url="/login?next=Notifications", status_code=status.HTTP_303_SEE_OTHER)
     return templates.TemplateResponse("Notifications.html", {"request": request, "username": username})
 
-# Login page route
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request, next: str = ""):
+    """
+    Serve the login page.
+    
+    Args:
+        request: FastAPI Request object
+        next: Optional URL to redirect to after successful login
+        
+    Returns:
+        TemplateResponse: Rendered login.html template
+    """
     return templates.TemplateResponse("login.html", {"request": request, "next": next, "error": None})
 
-# Login form handler
 @app.post("/login")
 async def login(request: Request, username: str = Form(...), password: str = Form(...), next: str = Form("")):
+    """
+    Handle login form submission.
+    
+    Args:
+        request: FastAPI Request object
+        username: Submitted username from form
+        password: Submitted password from form
+        next: URL to redirect to after successful login
+        
+    Returns:
+        RedirectResponse: To target page after successful login
+        TemplateResponse: Login page with error message if authentication fails
+    """
     try:
         # Use correct path relative to the project root, not the backend dir
-        # Assuming you run uvicorn from the backend directory
         db_path = os.path.join("..", "database", "user_auth.db")
         
         conn = sqlite3.connect(db_path)
@@ -103,9 +177,16 @@ async def login(request: Request, username: str = Form(...), password: str = For
         print(traceback.format_exc())
         return templates.TemplateResponse("login.html", {"request": request, "next": next, "error": f"System error: {str(e)}"})
 
-# Logout route
 @app.get("/logout")
 async def logout():
+    """
+    Handle user logout.
+    
+    Clears the session cookie and redirects to homepage.
+    
+    Returns:
+        RedirectResponse: To homepage after clearing session
+    """
     response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     response.delete_cookie(key="session")
     return response
