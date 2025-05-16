@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic meta tags for character set and responsive viewport -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Sensor Dashboard</title>
+  
+  <!-- External stylesheets and resources -->
+  <!-- Pico CSS for minimal styling -->
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <!-- Custom CSS for additional styling -->
+  <link rel="stylesheet" href="/static/index.css" />
+  <!-- Favicon for browser tab -->
+  <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+  <!-- Page header containing navigation elements -->
+  <header class="container">
+    <nav class="grid">
+      <!-- Left section: logo or brand -->
+      <div>
+        <strong>Sensor Dashboard</strong>
+      </div>
+
+      <!-- Center section: navigation links -->
+      <ul class="nav-center">
+        <li><a href="/" class="secondary">Home</a></li>
+      </ul>
+
+      <!-- Right section: empty for balance -->
+      <div class="align-right"></div>
+    </nav>
+  </header>
+
+  <!-- Main content area of the page -->
+  <main class="container">
+    <article class="grid">
+      <div>
+        <!-- Heading group for login form -->
+        <hgroup>
+          <h1>Login</h1>
+          <h2>Please enter your credentials</h2>
+        </hgroup>
+
+        <!-- Error message display (shown when login fails) -->
+        {% if error %}
+        <div role="alert">
+          <p style="color: red;">{{ error }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- Login form that submits to /login endpoint -->
+        <form method="post" action="/login">
+          <!-- Hidden field to track where to redirect after successful login -->
+          <input type="hidden" name="next" value="{{ next }}">
+          
+          <!-- Username input field -->
+          <label for="username">
+            Username
+            <input type="text" id="username" name="username" placeholder="Username" required>
+          </label>
+          
+          <!-- Password input field -->
+          <label for="password">
+            Password
+            <input type="password" id="password" name="password" placeholder="Password" required>
+          </label>
+          
+          <!-- Submit button -->
+          <button type="submit" class="contrast">Login</button>
+        </form>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

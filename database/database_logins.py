@@ -1,11 +1,31 @@
+"""
+User authentication database operations.
+
+This module provides functions for:
+- Creating the authentication database
+- Hashing passwords
+- Registering new users
+- Authenticating users
+"""
+
 import sqlite3
 from getpass import getpass
 import hashlib
 
+# Database file path
 db_path = './database/user_auth.db'
 
 def create_database():
-    """Create the database and users table if they don't exist"""
+    """
+    Initialize the database and create users table if it doesn't exist.
+    
+    The users table contains:
+    - id: Primary key
+    - username: Unique identifier
+    - password_hash: Hashed password
+    - userType: Optional user type (e.g., 'Admin')
+    - created_at: Timestamp of account creation
+    """
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
@@ -22,12 +42,29 @@ def create_database():
     conn.commit()
     conn.close()
 
-def hash_password(password):
-    """Hash the password using SHA-256"""
+def hash_password(password: str) -> str:
+    """
+    Hash a password using SHA-256 algorithm.
+    
+    Args:
+        password: Plain text password to hash
+        
+    Returns:
+        str: Hexadecimal string representation of the hash
+    """
     return hashlib.sha256(password.encode()).hexdigest()
 
 def register_user():
-    """Register a new user"""
+    """
+    Register a new user through interactive prompt.
+    
+    Collects:
+    - Username
+    - Password (hidden input)
+    - User type (admin or regular user)
+    
+    Handles duplicate username errors.
+    """
     username = input("Enter username: ")
     password = getpass("Enter password: ")
     if(input("Admin (y/n): ") == "y"):
@@ -55,8 +92,13 @@ def register_user():
     finally:
         conn.close()
 
-def login_user():
-    """Authenticate a user"""
+def login_user() -> bool:
+    """
+    Authenticate a user through interactive prompt.
+    
+    Returns:
+        bool: True if authentication succeeded, False otherwise
+    """
     username = input("Username: ")
     password = getpass("Password: ")
     
@@ -81,6 +123,14 @@ def login_user():
         return False
 
 def main():
+    """
+    Main entry point for command-line user authentication system.
+    
+    Provides menu for:
+    1. User registration
+    2. User login
+    3. Exit
+    """
     create_database()
     
     while True:
