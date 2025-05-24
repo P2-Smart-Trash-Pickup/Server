@@ -1,4 +1,5 @@
 from copy import deepcopy
+import json
 import time
 from milp.gen_data import generate_distance_matrix,gen_data_or
 from milp.vrp_tabu_optimized import near_neighbor_gen, sum_distance 
@@ -371,13 +372,16 @@ def solve_cutom_gls(distance_matrix,demands,vehicle_capacity,penalty=0.2,max_ite
     
 if __name__ == "__main__":
     point_amount = 100 
-    vehicle_amount = 10 
+    vehicle_amount = 1 
     height = 1080
     width = 1920
     test_times = 10 
     total_procent_diff = 0
     #for i in tqdm(range(test_times),desc="Testing"):
     points,distance_matrix = generate_distance_matrix(point_amount,width,height)
+    distance_matrix = []
+    with open("data/molok_distance_matrix2.json","r") as f:
+        distance_matrix = json.load(f)
     penalty_matrix = []
     for i in range(len(distance_matrix)):
         temp_row = []
@@ -389,16 +393,16 @@ if __name__ == "__main__":
     demands = [0.0]
     demand_google = [0]
 
-    for i in range(1,point_amount):
+    for i in range(1,len(distance_matrix)):
         demands.append(1.0)
         demand_google.append(1)
-    vehicle_capacity = point_amount/vehicle_amount
+    vehicle_capacity = len(distance_matrix)/vehicle_amount
 
     img = Image.new("RGB", (width, height))
     draw = ImageDraw.Draw(img)
     max_time = 10
-    data = gen_data_or(distance_matrix,point_amount,vehicle_amount,demand_google)
-    google_distance = solve_vrp_google(data,points,draw,max_time)
+    #data = gen_data_or(distance_matrix,point_amount,vehicle_amount,demand_google)
+    #google_distance = solve_vrp_google(data,points,draw,max_time)
     #print(f"Len google: {google_distance}")
     #img.save("or.png")
 
@@ -423,12 +427,12 @@ if __name__ == "__main__":
     #img.save("gls.png")
 
     cost_routes = sum([sum_distance(route,distance_matrix) for route in routes])
-    #print(f"GLS: {cost_routes}")
+    print(f"GLS: {cost_routes}")
     #print(routes)
     #print(f"Best distance: {cost_routes}")
-    procentage_diff = ((cost_routes - google_distance) /google_distance)*100
-    total_procent_diff += procentage_diff
-    print(f"Procent worse: {procentage_diff}")
+    #procentage_diff = ((cost_routes - google_distance) /google_distance)*100
+    #total_procent_diff += procentage_diff
+    #print(f"Procent worse: {procentage_diff}")
     #print(f"Procent diff: {total_procent_diff/test_times}")
 
 

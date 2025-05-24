@@ -8,8 +8,8 @@ test = json.dumps([])
 distance_fn= "../data/molok_distance_matrix2.json"
 time_fn= "../data/molok_time_matrix2.json"
 poly_fn= "../data/molok_polyline_matrix2.json"
-ele_fn= "../data/molok_elevation_matrix2.json"
-index_keeper = "../data/index_keeper.json"
+ele_fn= "../data/molok_height_matrix.json"
+index_keeper = "../data/index_keeper2.json"
 
 try:
     with open(distance_fn,"x") as f:
@@ -113,13 +113,13 @@ for molok1_index in tqdm(range(len(all_mollooker)),desc="Generating matrixes"):
             continue
         points = summary["points"]["coordinates"]
         
-        poly_line = [[val[1],val[0]]for val in points]
-
         elevation_data = [] 
+        poly_line = []
         total_distance = 0
         for val_idx in range(len(points)-1):
             val = points[val_idx]
             next_val = points[val_idx+1]
+            poly_line.append([val[1],val[0]])
             height = val[2]
             distance = distance_lat_long(val[1],val[0],next_val[1],next_val[0])*1000
 
@@ -127,63 +127,20 @@ for molok1_index in tqdm(range(len(all_mollooker)),desc="Generating matrixes"):
 
             total_distance += distance
 
+        poly_line.append([points[-1][1],points[-1][0]])
+
         elevation_data.append([total_distance,points[-1][2]])
 
         elevation_data = [elevation_data[0]] + [elevation_data[data_idx] for data_idx in range(1,len(elevation_data)) if elevation_data[data_idx][0] != elevation_data[data_idx-1][0]]
 
-        sum_angle = 0
-        for data_idx2 in range(1,len(elevation_data))[::-1]:
-            data = elevation_data[data_idx2-1]
-            data_next = elevation_data[data_idx2]
-
-            angle = math.atan(((data_next[1]-data[1])/(data_next[0]-data[0]))*(180/math.pi))
-            sum_angle+=abs(angle)
-
-        elevation_copy = []
-
-        min_angle = sum_angle/(len(elevation_data)-1)
-        min_angle = min_angle
-
-        has_point = True 
-        point_index = len(elevation_data)-1
-
-        while has_point: 
-            has_point = False
-
-            for data_idx2 in range(point_index)[::-1]:
-                data = elevation_data[data_idx2]
-                data_next = elevation_data[point_index]
-
-                angle = math.atan(((data_next[1]-data[1])/(data_next[0]-data[0]))*(180/math.pi))
-
-                if abs(angle) > min_angle:
-                    elevation_copy.append(data_next)
-                    point_index = data_idx2
-                    has_point = True
-                    break
-        elevation_copy= elevation_copy[::-1]
-        if not elevation_copy:
-            elevation_copy.append(elevation_data[0])
-            elevation_copy.append(elevation_data[-1])
-
-        pre_angle = 0
-
-        for data_idx in range(len(elevation_copy)-1):
-            data = elevation_copy[data_idx]
-            data_next = elevation_copy[data_idx+1]
-
-            angle = math.atan(((data_next[1]-data[1])/(data_next[0]-data[0]))*(180/math.pi))
-
-            elevation_copy[data_idx][1] =pre_angle 
-            pre_angle = angle
-
-        elevation_copy[-1][1] = pre_angle
 
 
         distance_matrix[-1].append(distance_taken)
         time_matrix[-1].append(time_taken)
         polyline_matrix[-1].append(poly_line)
-        ele_matrix[-1].append(elevation_copy)
+
+
+        ele_matrix[-1].append(elevation_data)
 
     if molok1_index % 50 == 0:
 
