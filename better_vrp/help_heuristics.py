@@ -72,7 +72,7 @@ class Heuristic:
 
 
 class EnergyHeuristic:
-    def __init__(self, heuristic_solver, implement_heuristic) -> None:
+    def __init__(self, heuristic_solver, implement_heuristic, name) -> None:
 
         self.heuristic_solver = heuristic_solver
         self.implement_heuristic = implement_heuristic
@@ -85,6 +85,7 @@ class EnergyHeuristic:
 
         self.best_day_i = 0
         self.best_day_j = 0
+        self.name = name
 
     def solve(
         self,
@@ -130,6 +131,9 @@ class EnergyHeuristic:
         volume_matrix: list[list[float]],
         fill_rates: list[float],
     ):
+        print()
+        print(f"Implementing: {self.name}")
+        print()
         self.implement_heuristic(
             day_plan=day_plan,
             days_in=days_in,
@@ -233,7 +237,8 @@ def update_weight_matrix(
 
 
 def is_weekend(due_date: int) -> bool:
-    is_weekend = due_date == 5 or due_date == 6 or due_date == 12 or due_date == 13
+    weekends = [5, 6, 12, 13, 19, 20, 26, 27]
+    is_weekend = due_date in weekends
     return is_weekend
 
 

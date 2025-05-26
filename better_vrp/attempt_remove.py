@@ -52,12 +52,12 @@ def attemp_remove_multi(
                     next_day = temp_days[next_i]
                     pre_diff = 0
                     if pre_day >= cur_day:
-                        pre_diff = 14 - abs(cur_day - pre_day)
+                        pre_diff = len(day_plan) - abs(cur_day - pre_day)
                     else:
                         pre_diff = cur_day - pre_day
                     next_diff = 0
                     if cur_day >= next_day:
-                        next_diff = 14 - abs(cur_day - next_day)
+                        next_diff = len(day_plan) - abs(cur_day - next_day)
                     else:
                         next_diff = next_day - cur_day
 
@@ -172,12 +172,12 @@ def attempt_remove_mutli_day_en(
                     next_day = temp_days[next_i]
                     pre_diff = 0
                     if pre_day >= cur_day:
-                        pre_diff = 14 - abs(cur_day - pre_day)
+                        pre_diff = len(day_plan) - abs(cur_day - pre_day)
                     else:
                         pre_diff = cur_day - pre_day
                     next_diff = 0
                     if cur_day >= next_day:
-                        next_diff = 14 - abs(cur_day - next_day)
+                        next_diff = len(day_plan) - abs(cur_day - next_day)
                     else:
                         next_diff = next_day - cur_day
 

@@ -15,8 +15,8 @@ def calculate_energy_expendeture(
     air_density: float = 1.225,
     rolling_resistance: float = 0.03,
     drag_resistance: float = 0.8,
-    drive_train_efficiency: float = 0.4,
-    discharge_efficiency: float = 0.7,
+    drive_train_efficiency: float = 0.85,
+    discharge_efficiency: float = 0.9,
 ) -> float:
 
     gravity_acceleration = 9.82
@@ -34,59 +34,6 @@ def calculate_energy_expendeture(
     E_c = (P_t / (1000 * discharge_efficiency)) * duration_h
 
     return E_c
-
-
-"""
-def calculate_energy_expendeture(
-    duration_t: float,  # seconds
-    mass: float,  # kg
-    road_angle: float,  # radians
-    vehicle_speed: float,  # m/s
-    vehicle_acceleration: float,  # m/s^2
-    vehicle_front_area: float = 8,  # m^2
-    air_density: float = 1.225,  # kg/m^3
-    rolling_resistance: float = 0.03,
-    drag_coefficient: float = 0.8,
-    drivetrain_efficiency: float = 0.85,
-    discharge_efficiency: float = 0.9,
-    regen_efficiency: float = 0.7,  # typical regen efficiency
-    max_regen_power: float = 100e3,  # 100 kW, adjust for your vehicle
-) -> float:
-
-    g = 9.81  # m/s^2
-    duration_h = duration_t / 3600  # convert seconds to hours
-
-    # Forces (N)
-    F_inertia = mass * vehicle_acceleration
-    F_slope = mass * g * math.sin(road_angle)
-    F_roll = mass * g * math.cos(road_angle) * rolling_resistance
-    F_aero = (
-        0.5 * air_density * drag_coefficient * vehicle_front_area * (vehicle_speed**2)
-    )
-
-    # Total tractive force (N)
-    F_total = F_inertia + F_slope + F_roll + F_aero
-
-    # Power required at wheels (W)
-    P_wheel = vehicle_speed * F_total  # W
-
-    # Power at battery (W)
-    if P_wheel >= 0:
-        # Consuming energy
-        P_batt = P_wheel / (drivetrain_efficiency * discharge_efficiency)
-    else:
-        # Regenerating energy (cap at max regen power)
-        regen_power = min(abs(P_wheel), max_regen_power)
-        P_batt = -regen_power * regen_efficiency
-
-    # Energy (kWh)
-    E_kWh = (P_batt * duration_t) / 3600_000  # W*s to kWh
-
-    # Prevent net negative energy over segment (optional, for safety)
-    E_kWh = max(E_kWh, 0)
-
-    return E_kWh
-"""
 
 
 def calcualte_segment_energy(
@@ -170,13 +117,16 @@ def calculate_segment_energy_points(
     elevation_matrix: list[list[list[list[float]]]],
     time_matrix: list[list[float]],
     penalty_matrix: list[list[int]],
-    penalty: float,
+    penalty: float | None,
     vehicle: Vehicle,
     extra_mass: float,
 ) -> tuple[float, float, float]:
     arc = elevation_matrix[point1][point2]
     time = time_matrix[point1][point2]
-    penalty_amount = penalty_matrix[point1][point2]
+
+    penalty_amount = 0
+    if penalty_matrix and penalty != None:
+        penalty_amount = penalty_matrix[point1][point2]
 
     reg_cost, pen_cost = calcualte_segment_energy(
         arc,

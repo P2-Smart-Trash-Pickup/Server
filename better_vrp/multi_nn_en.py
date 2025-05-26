@@ -13,6 +13,7 @@ from help_heuristics import (
     volume_to_weight,
 )
 from test_vrp import gen_test, gen_test_dist
+
 from copy import copy, deepcopy
 import math
 from tqdm import tqdm
@@ -53,7 +54,7 @@ def near_neighbor_compare_best_en(
             current_point = current_route[idx]
             next_point = current_route[idx + 1]
             old_weights = sum_route_weight_volume(
-                route=current_route[: current_point + 1], weights=weights
+                route=current_route[: idx + 1], weights=weights
             )
             old_distance = calculate_segment_energy_points(
                 point1=current_point,
@@ -61,7 +62,7 @@ def near_neighbor_compare_best_en(
                 elevation_matrix=elevation_matrix,
                 time_matrix=time_matrix,
                 penalty_matrix=[],
-                penalty=0,
+                penalty=None,
                 vehicle=current_vehicle,
                 extra_mass=old_weights,
             )[0]
@@ -73,7 +74,7 @@ def near_neighbor_compare_best_en(
                 elevation_matrix=elevation_matrix,
                 time_matrix=time_matrix,
                 penalty_matrix=[],
-                penalty=0,
+                penalty=None,
                 vehicle=current_vehicle,
                 extra_mass=old_weights,
             )[0]
@@ -84,7 +85,7 @@ def near_neighbor_compare_best_en(
                 elevation_matrix=elevation_matrix,
                 time_matrix=time_matrix,
                 penalty_matrix=[],
-                penalty=0,
+                penalty=None,
                 vehicle=current_vehicle,
                 extra_mass=old_weights + v_k_weight,
             )[0]
@@ -127,6 +128,7 @@ def assign_no_due(
     day_period = len(days)
 
     while no_dues:
+
         best_overall_cost = float("inf")
         best_overall_k = None
         best_day = 0
@@ -134,12 +136,19 @@ def assign_no_due(
         best_insertion = 0
 
         for day_idx in range(len(days)):
-
             if is_weekend(day_idx):
                 continue
             routes = days[day_idx]
+
+            # print()
+            # print(f"{day_idx} : {routes[0]}")
             weights = weight_matrix[day_idx]
             volumes = volume_matrix[day_idx]
+
+            temp_unassigned = copy(no_dues)
+            for point in no_dues:
+                if day_idx in days_in[point]:
+                    temp_unassigned.remove(point)
             for route_idx in range(len(routes)):
                 route = routes[route_idx]
                 sum_weight = sum_route_weight_volume(route, weights)
@@ -153,6 +162,7 @@ def assign_no_due(
                     weights=weights,
                     vehicle=current_vehicle,
                 )
+
                 best_cost, best_k, best_insert, _, _, _ = near_neighbor_compare_best_en(
                     sum_power=sum_power,
                     elevation_matrix=elevation_matrix,
@@ -163,10 +173,15 @@ def assign_no_due(
                     current_route=route,
                     time_matrix=time_matrix,
                     current_vehicle=current_vehicle,
-                    unassigned_points=no_dues,
+                    unassigned_points=temp_unassigned,
                     sum_time=sum_time,
                     stop_time=stop_time,
                 )
+                if best_k in days[day_idx][0] and best_cost < float("inf"):
+                    print("")
+                    print(f"BEST K: {best_k}")
+                    print(f"DAYS IN: {days_in[best_k]}")
+                    raise Exception("HOW")
 
                 if best_cost < best_overall_cost:
                     best_overall_cost = best_cost
@@ -175,12 +190,66 @@ def assign_no_due(
                     best_insertion = best_insert
                     best_overall_k = best_k
         if not best_overall_k:
-            for i, dag in enumerate(days_in):
-                print(f"{i}: {dag}")
-            # print(f"YOLO: {}")
-            break
-        p_bar.update(1)
+            print("removing points")
+            removed_point = False
+            for i in range(len(elevation_matrix)):
+                if empty_intervals[i] == 0:
+                    continue
+                did_optimize = empty_intervals[i] <= day_period
+                while did_optimize:
+                    did_optimize = False
+                    temp_days = copy(days_in[i])
+                    temp_days.sort()
+                    for idx in range(len(temp_days)):
+                        pre_day = temp_days[idx - 1]
+                        cur_day = temp_days[idx]
 
+                        next_i = (idx + 1) % len(temp_days)
+                        next_day = temp_days[next_i]
+                        pre_diff = 0
+                        if pre_day >= cur_day:
+                            pre_diff = day_period - abs(cur_day - pre_day)
+                        else:
+                            pre_diff = cur_day - pre_day
+                        next_diff = 0
+                        if cur_day >= next_day:
+                            next_diff = day_period - abs(cur_day - next_day)
+                        else:
+                            next_diff = next_day - cur_day
+
+                        if pre_diff + next_diff <= empty_intervals[i]:
+                            removed_point = True
+                            did_optimize = True
+                            routes = days[cur_day]
+                            for route in routes:
+                                if best_overall_k in route:
+                                    route.remove(best_overall_k)
+                            days_in[i].remove(cur_day)
+                        break
+
+            volume_matrix = gen_weight_day_matrix(
+                [0.0 for _ in elevation_matrix],
+                fill_rates=fill_rates,
+                day_period=day_period,
+                days_in=days_in,
+            )
+
+            weight_matrix = gen_weight_day_matrix(
+                [0.0 for _ in elevation_matrix],
+                fill_rates=fill_rates,
+                day_period=day_period,
+                days_in=days_in,
+            )
+
+            for day_idx in range(len(volume_matrix)):
+                for point_idx in range(len(volume_matrix[day_idx])):
+                    weight_matrix[day_idx][point_idx] = volume_to_weight(
+                        volume_matrix[day_idx][point_idx]
+                    )
+            if not removed_point:
+                raise Exception("WOOSH")
+            else:
+                continue
         days[best_day][best_route].insert(best_insertion, best_overall_k)
         days_in[best_overall_k].append(best_day)
 
@@ -198,132 +267,30 @@ def assign_no_due(
             days_in=days_in,
         )
 
-        temp = copy(days_in[best_overall_k])
-        temp.append(best_day)
-        temp.sort()
-        max_empty = get_max_empty(temp, day_period)
-        # print(f"overall: {best_overall_k}")
-        while max_empty > empty_intervals[best_overall_k]:
+        for day_idx in range(len(volume_matrix)):
+            for point_idx in range(len(volume_matrix[day_idx])):
+                weight_matrix[day_idx][point_idx] = volume_to_weight(
+                    volume_matrix[day_idx][point_idx]
+                )
 
-            best_temp_cost = float("inf")
-            temp_k = None
-            temp_insert = 0
-            temp_day = 0
-            temp_route = 0
-            for day_idx in range(len(days)):
-                if is_weekend(day_idx) or day_idx in days_in[best_overall_k]:
-                    continue
+        days_in[best_overall_k].sort()
+        max_empty = get_max_empty(days_in[best_overall_k], day_period)
 
-                routes = days[day_idx]
-                weights = weight_matrix[day_idx]
-                volumes = volume_matrix[day_idx]
+        if max_empty <= empty_intervals[best_overall_k]:
+            no_dues.remove(best_overall_k)
+            p_bar.update(1)
 
-                for route_idx in range(len(routes)):
-
-                    route = routes[route_idx]
-                    sum_weight = sum_route_weight_volume(route, weights)
-                    sum_volume = sum_route_weight_volume(route, volumes)
-                    sum_time = sum_route_time(route, time_matrix, stop_time)
-                    current_vehicle = vehicles[route_idx]
-                    sum_power, _ = calculate_route_energy(
-                        route=route,
-                        elevation_matrix=elevation_matrix,
-                        time_matrix=time_matrix,
-                        weights=weights,
-                        vehicle=current_vehicle,
-                    )
-                    best_cost, best_k, best_insert, _, _, _ = (
-                        near_neighbor_compare_best_en(
-                            sum_power=sum_power,
-                            elevation_matrix=elevation_matrix,
-                            volumes=volumes,
-                            weights=weights,
-                            sum_weight=sum_weight,
-                            sum_volume=sum_volume,
-                            current_route=route,
-                            time_matrix=time_matrix,
-                            current_vehicle=current_vehicle,
-                            unassigned_points=no_dues,
-                            sum_time=sum_time,
-                            stop_time=stop_time,
-                        )
-                    )
-                    if best_cost < best_temp_cost:
-                        best_temp_cost = best_cost
-                        temp_k = best_k
-                        temp_insert = best_insert
-                        temp_day = day_idx
-                        temp_route = route_idx
-            if not temp_k:
-                break
-            days_in[temp_k].append(temp_day)
-            days[temp_day][temp_route].insert(temp_insert, temp_k)
-
-            volume_matrix = gen_weight_day_matrix(
-                [0.0 for _ in elevation_matrix],
-                fill_rates=fill_rates,
-                day_period=day_period,
-                days_in=days_in,
-            )
-
-            weight_matrix = gen_weight_day_matrix(
-                [0.0 for _ in elevation_matrix],
-                fill_rates=fill_rates,
-                day_period=day_period,
-                days_in=days_in,
-            )
-
-            temp = copy(days_in[temp_k])
-            temp.append(temp_day)
-            temp.sort()
-            max_empty = get_max_empty(temp, day_period)
-        did_optimize = empty_intervals[best_overall_k] <= day_period
-        while did_optimize:
-            did_optimize = False
-            temp_days = copy(days_in[best_overall_k])
-            temp_days.sort()
-            for idx in range(len(temp_days)):
-                pre_day = temp_days[idx - 1]
-                cur_day = temp_days[idx]
-
-                next_i = (idx + 1) % len(temp_days)
-                next_day = temp_days[next_i]
-                pre_diff = 0
-                if pre_day >= cur_day:
-                    pre_diff = 14 - abs(cur_day - pre_day)
-                else:
-                    pre_diff = cur_day - pre_day
-                next_diff = 0
-                if cur_day >= next_day:
-                    next_diff = 14 - abs(cur_day - next_day)
-                else:
-                    next_diff = next_day - cur_day
-
-                if pre_diff + next_diff <= empty_intervals[best_overall_k]:
-                    did_optimize = True
-                    routes = days[cur_day]
-                    for route in routes:
-                        if best_overall_k in route:
-                            route.remove(best_overall_k)
-                    days_in[best_overall_k].remove(cur_day)
-
-                    break
-
-        volume_matrix = gen_weight_day_matrix(
-            [0.0 for _ in elevation_matrix],
-            fill_rates=fill_rates,
-            day_period=day_period,
-            days_in=days_in,
-        )
-
-        weight_matrix = gen_weight_day_matrix(
-            [0.0 for _ in elevation_matrix],
-            fill_rates=fill_rates,
-            day_period=day_period,
-            days_in=days_in,
-        )
-
-        no_dues.remove(best_overall_k)
+    for day_idx in range(len(elevation_matrix)):
+        if empty_intervals[day_idx] == 0:
+            continue
+        temp_days_in = days_in[day_idx]
+        temp_empty = empty_intervals[day_idx]
+        temp_max_empty = get_max_empty(temp_days_in, day_period)
+        if temp_max_empty > temp_empty:
+            print(f"day: {day_idx}")
+            print(f"empt interval: {day_idx}")
+            print(f"max empty: {day_idx}")
+            raise Exception("Shizzy lizzy")
 
     p_bar.close()
 
@@ -484,17 +451,20 @@ if __name__ == "__main__":
                 if i in route:
                     nord_real_days_in[i].append(day_idx)
 
+    """
     for i in range(1, len(elevation_matrix)):
         nord_fill = nord_fills[i]
         max_f = max_volumes[i]
         fill_rates[i] = (max_f / day_period) * nord_fill
+    """
 
     for idx in range(1, len(nord_real_days_in)):
         if len(nord_real_days_in[idx]) == 0:
             fill_rates[idx] = 0
         else:
             max_f = max_volumes[idx]
-            fill_rates[idx] = (max_f / day_period) * len(nord_real_days_in[idx]) * 0.5
+            fill_rates[idx] = (max_f / 14) * len(nord_real_days_in[idx]) * 0.5
+    fill_rates[0] = 0
 
     stop_time = 300000
     weights = [0.0]
@@ -504,7 +474,7 @@ if __name__ == "__main__":
         max_f = max_volumes[idx]
         fill_rate = fill_rates[idx]
         if fill_rate == 0:
-            weights.append(0)
+            weights.append(0.0)
             empty_intervals.append(0)
             continue
         procent_diff = max_f / fill_rate
@@ -519,6 +489,7 @@ if __name__ == "__main__":
     )
     """
 
+    """
     volume_matrix = gen_weight_day_matrix(
         [0.0 for _ in elevation_matrix],
         fill_rates=fill_rates,
@@ -547,6 +518,7 @@ if __name__ == "__main__":
             weight_matrix[day_idx][point_idx] = volume_to_weight(
                 volume_matrix[day_idx][point_idx]
             )
+
     pre_nord_total_dist = sum(
         [
             sum(
@@ -583,7 +555,7 @@ if __name__ == "__main__":
         weight_matrix=weight_matrix,
         days_in=nord_real_days_in,
         empty_intervals=empty_intervals,
-        max_iter=100000,
+        max_iter=50,
         max_no_improve=100,
         debug_iter=10,
         fill_rates=fill_rates,
@@ -612,19 +584,20 @@ if __name__ == "__main__":
 
     with open("../data/optimized_nord_energy.json", "w") as f:
         json.dump(best_nord_plan, f)
+    """
 
     nn_volume_matrix = gen_weight_day_matrix(
         [0.0 for _ in elevation_matrix],
         fill_rates=fill_rates,
         day_period=day_period,
-        days_in=[],
+        days_in=[[] for _ in elevation_matrix],
     )
 
     nn_weight_matrix = gen_weight_day_matrix(
         [0.0 for _ in elevation_matrix],
         fill_rates=fill_rates,
         day_period=day_period,
-        days_in=[],
+        days_in=[[] for _ in elevation_matrix],
     )
 
     for day_idx in range(len(nn_volume_matrix)):
@@ -692,11 +665,11 @@ if __name__ == "__main__":
                     for r_idx, i in enumerate(routes)
                 ]
             )
-            for day_idx, routes in enumerate(nord_days)
+            for day_idx, routes in enumerate(day_plan)
         ]
     )
 
-    print(f"pre nord dist: {pre_day_diff}")
+    print(f"pre day dist: {pre_day_diff}")
 
     best_day_plan = gls_en(
         day_plan=day_plan,
@@ -710,8 +683,8 @@ if __name__ == "__main__":
         weight_matrix=day_weight_matrix,
         days_in=real_days_in,
         empty_intervals=empty_intervals,
-        max_iter=100000,
-        max_no_improve=100,
+        max_iter=50,
+        max_no_improve=10,
         debug_iter=10,
         fill_rates=fill_rates,
     )
@@ -737,16 +710,41 @@ if __name__ == "__main__":
     print(f"aft base dist: {base_total_dist}")
     print(f"diff base: {base_total_dist- pre_day_diff}")
 
-    print(f"diff nord: {base_total_dist- nord_total_dist}")
+    real_days_in = [[] for _ in all_moloks]
+    for i in range(len(all_moloks)):
+        for day_idx, day in enumerate(best_day_plan):
+            for route in day:
+                if i in route:
+                    real_days_in[i].append(day_idx)
+                    break
 
+    # print(f"diff nord: {nord_total_dist- pre_nord_total_dist}")
+
+    """
     print("NORD")
     for dayx_idx, routes in enumerate(best_nord_plan):
         for route_idx in range(len(routes)):
             print(f"{dayx_idx}:{route_idx}: {best_nord_plan[dayx_idx][route_idx]}")
         print()
+    """
 
     print("BASE")
     for dayx_idx, routes in enumerate(best_day_plan):
         for route_idx in range(len(routes)):
             print(f"{dayx_idx}:{route_idx}: {best_day_plan[dayx_idx][route_idx]}")
         print()
+    with open(f"optimized_day_{day_period}.json", "w") as f:
+        json.dump(best_day_plan, f)
+
+    for day_idx in range(1, len(elevation_matrix)):
+        if empty_intervals[day_idx] == 0:
+            continue
+        temp_days_in = real_days_in[day_idx]
+        temp_empty = empty_intervals[day_idx]
+        temp_max_empty = get_max_empty(temp_days_in, day_period)
+        if temp_max_empty > temp_empty:
+            print(f"day: {day_idx}")
+            print(f"empt interval: {temp_empty}")
+            print(f"max empty: {temp_max_empty}")
+            print(f"days in: {temp_days_in}")
+            raise Exception("GLS IS SUSSY")

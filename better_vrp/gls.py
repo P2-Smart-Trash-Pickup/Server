@@ -34,6 +34,7 @@ from attempt_remove import (
 from vehicle import Vehicle
 from help_heuristics import (
     Heuristic,
+    get_max_empty,
     sum_route_dist,
     EnergyHeuristic,
 )
@@ -249,11 +250,11 @@ def local_search_en(
 
     results: list[EnergyHeuristic] = []
     heuristics: list[EnergyHeuristic] = [
-        EnergyHeuristic(two_op_en_multi_day, implement_two_op_days_en),
-        EnergyHeuristic(relocate_mutli_day_en, implement_relocate_day_en),
-        EnergyHeuristic(exchange_multi_day_en, implement_exchange_day_en),
-        #EnergyHeuristic(cross_multi_day_en, implement_cross_day_en),
-        EnergyHeuristic(attempt_remove_mutli_day_en, implement_remove_day_en),
+        EnergyHeuristic(two_op_en_multi_day, implement_two_op_days_en, "Two op"),
+        EnergyHeuristic(relocate_mutli_day_en, implement_relocate_day_en, "Relocate"),
+        EnergyHeuristic(exchange_multi_day_en, implement_exchange_day_en, "Exchange"),
+        # EnergyHeuristic(cross_multi_day_en, implement_cross_day_en),
+        EnergyHeuristic(attempt_remove_mutli_day_en, implement_remove_day_en, "Remove"),
     ]
 
     iter = 0
@@ -448,6 +449,19 @@ def gls_en(
             since_no_improve = 0
         else:
             since_no_improve += 1
+
+        for day_idx in range(1, len(elevation_matrix)):
+            if empty_intervals[day_idx] == 0:
+                continue
+            temp_days_in = days_in[day_idx]
+            temp_empty = empty_intervals[day_idx]
+            temp_max_empty = get_max_empty(temp_days_in, len(day_plan))
+            if temp_max_empty > temp_empty:
+                print(f"day: {day_idx}")
+                print(f"empt interval: {temp_empty}")
+                print(f"max empty: {temp_max_empty}")
+                print(f"days in: {temp_days_in}")
+                raise Exception("GLS IS SUSSY")
 
     local_search_en(
         elevation_matrix=elevation_matrix,
